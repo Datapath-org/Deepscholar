@@ -1,10 +1,10 @@
 
 # Deepscholar
-Hola, nuestro proyecto se llamará Deepscholar
+Hi, our name proyect is Deepscholar
 </br>
-Paola Castillo pcstillo6@gmail.com
+Líder: Paola Castillo pcstillo6@gmail.com
 </br>
-Alejandro Lidell alexmixsep@gmail.com
+Testing: Alejandro Lidell alexmixsep@gmail.com
 </br>
-Enrique Luviano kikeluviano1810@gmail.com
+Tecnologías: Enrique Luviano kikeluviano1810@gmail.com
 
