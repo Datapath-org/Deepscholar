@@ -10,6 +10,7 @@ We provide people in academia with a way to stay up to date on advances in scien
 </br>
 </br>
 Team members
+</br>
 Líder: Paola Castillo pcstillo6@gmail.com
 </br>
 Testing: Alejandro Lidell alexmixsep@gmail.com
