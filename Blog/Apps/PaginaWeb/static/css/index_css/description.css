@@ -1,0 +1,29 @@
+/* Estilo para la sección dentro de la caja (Descripción) */ 
+
+/* Form box ---------------------------------------------------------------------------*/ 
+
+/* Form box style */
+.form_box {
+  border: 1px solid white;
+  box-shadow: inset 0px 0px 5px 2px red, 0px 0px 5px 2px red;
+  position: relative;
+  padding: 20px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 750px;
+  border-radius: 30px;
+  background-color: black;
+  opacity: 0.9;
+  z-index: 0;
+  color: white;
+}
+
+.form_box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------------------------------ */
