@@ -3,10 +3,15 @@ from django.shortcuts import render
 import requests, json
 from urllib.parse import urlencode, quote_plus
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 # Create your views here.
 def home(request):
 
-    token = "A6Utcox848aVp9tunWYvadPEc7fs41W51W5C4KUR"
+    token = os.getenv('API_TOKEN')
 
     # Pagínador
     start = 0
