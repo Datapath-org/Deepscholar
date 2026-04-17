@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+  <head> <!--contiene informacion sobre el documento -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <!--Para que funcione en celulares -->
+    <meta charset="UTF-8"/>
+    <meta name="author" content="Alex"/>
+    <title>Te amo Emil</title> <!-- Titulo de la página (nombre en pestaña) -->
+    <link rel="page icon" type="image/png" href="{% static 'img/page_icon.ico' %}"/>
+    <link rel="stylesheet" href="{% static 'css/index_css/fonts.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/index_css/body.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/index_css/description.css' %}"/>
+
+  </head>
+
+  <body>
+    <main>
+      <!-- Request from nasaads api -------------------------------------------------------------- -->
+      <section class="form_box">
+        <ul>
+          {% for doc in docs %}
+          <li>
+            <p><strong>Titulo:</strong> {{ doc.title.0 }}</p>
+            <p><strong>Autores:</strong> {{ doc.author|join:", " }}</p>
+            <p><strong>Número de veces citado:</strong> {{ doc.citation_count }}</p>
+            <hr>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      <!-- --------------------------------------------------------------------------------------- -->
+    </main>
+  </body>
+</html>

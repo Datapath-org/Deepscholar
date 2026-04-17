@@ -1,0 +1,21 @@
+/* Fuentes Estilo de texto */
+@font-face {
+  font-family: "Ubuntu_Nerd_Font_Regular";  /* Nombre de la fuente */
+  src: url("../../fonts/UbuntuNerdFont-Regular.ttf") format('truetype');   /* direccion a la fuente y formato (truetype, opentype, etc., no se acepta ttf, hay que poner el nombre completo) */
+  font-weight: normal;  /* Tamaño de la fuente */
+  font-style: normal;   /* Aplica estilo a la fuente, por ejemplo italica o negrita */
+}
+
+@font-face {
+  font-family: "Beauty_Wind";
+  src: url("../../fonts/Beauty Wind.ttf") format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Agent_C";
+  src: url("../../fonts/Agent_'C'.ttf") format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
