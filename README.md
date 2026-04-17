@@ -75,7 +75,8 @@ We display the information in the HTML using a loop and Django’s built-in temp
 
 This is a built-in for loop from Django. Django provides different template commands, which are written using ```{% %}``` syntax, while variables and objects are referenced using ```{{ }}```.”
 
-- ```{% for doc in docs %}```: We declare the for loop as follows, for each document (```doc```) in the documents (```docs```) variable.</br>
+- ```{% for doc in docs %}```: We declare the for loop as follows, for each document (```doc```) in the documents (```docs```) variable.
+</br>
 In the next rows we are accesing to the interest parts of the json dictionary from the document retrieved:
 - ```{{ doc.title.0 }}```: List its title.
 - ```{{ doc.author|join:", " }}```: List its authors.
