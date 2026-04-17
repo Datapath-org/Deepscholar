@@ -80,7 +80,7 @@ This is a built-in for loop from Django. Django provides different template comm
 In the next rows we are accesing to the interest parts of the json dictionary from the document retrieved:
 
 - ```{{ doc.title.0 }}```: List its title.
-- ```{{ doc.author|join:", " }}```: List its authors.
+- ```{{ doc.author|join:", " }}```: List the authors and separate them with commas.
 - ```{{ doc.citation_count }}```: List its citation count.
 - ```{{% endfor %}}```: Finaly, we end the loop.
 
