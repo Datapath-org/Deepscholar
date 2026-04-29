@@ -8,8 +8,8 @@ We provide people in academia with a way to stay up to date on advances in scien
 - Autonomous University of Mexico (UNAM)
 - National School of Higher Studies (ENES)
 </br>
+
 ### Methodology
-<br>
 To develop the project, a process was carried out in which different requirements were established so that DataPath could be successfully developed.
 </br>
 - The NASA ADS API was integrated to collect scientific articles.
@@ -20,8 +20,9 @@ To develop the project, a process was carried out in which different requirement
 </br>
 - Testing and validation.
 </br>
+</br>
+
 ### Implementation
-<br>
 - Backend:  Python and Django
 </br>
 - Frontend: HTML, CSS, JavaScript
