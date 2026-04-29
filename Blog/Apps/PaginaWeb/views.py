@@ -36,3 +36,14 @@ def home(request):
     return render(request, "index.html", {
         'docs': docs
     })
+
+
+from django.http import HttpResponse
+from models import Flux
+from datetime import datetime
+
+def index(request):
+    data=Flux.objects.values
+    now = datetime.now()
+    flux = Flux(now, 1.0)
+    return HttpResponse("Este es mi microservicio")
