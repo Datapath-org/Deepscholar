@@ -1,0 +1,35 @@
+*.env
+__pycache__/
+#settings.py
+db.sqlite3
+
+# Entornos virtuales
+#venv/
+#blog_env/
+
+# Django
+
+*.log
+media/
+
+# Variables de entorno / secretos
+.env
+
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribución
+.Python
+build/
+develop-eggs/
+dist/
+*.egg-info/
+.eggs/
+
+# IDEs
+.vscode/
+.idea/
