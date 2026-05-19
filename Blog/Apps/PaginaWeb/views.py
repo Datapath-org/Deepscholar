@@ -182,7 +182,7 @@ def carga_mas(request):
                                                     user=user,
         ).exists()    
      
-    return JsonResponse({
+    return JsonResponse({   #Com
         'docs': r_docs
     })
 
