@@ -1,0 +1,80 @@
+/* PAGINA LOGIN*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: #000000;
+    overflow-y: scroll;
+
+}
+
+.contenedor {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    
+}
+
+.imgfondo {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: cover;
+    border-radius: 15px;
+    z-index: 0;
+}
+.recuadro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1500px;
+    height: 700px;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.37);
+    border-radius: 10px;
+    z-index: 1;
+}
+.user_card {
+    background-color: rgba(255, 255, 255, 0.575);
+    border-radius: 10px;
+     z-index: 2;
+   
+}
+#form-title {
+margin-top: 10px;
+  color: rgb(37, 43, 77);
+  font-family: 'Montserrat';
+  font-size: 35px;
+  font-weight:400;
+  margin-bottom: 15px;
+}
+.login_btn {
+	width: 100%;
+	background: rgb(37, 43, 77) !important;
+	color: rgb(37, 43, 77) !important;
+}
+
+.input-group-text {
+    background: rgb(37, 43, 77) !important;
+	color: white !important;
+	border: 0 !important;
+	border-radius: 0.25rem 0 0 0.25rem !important;
+    border: 1px solid rgb(255, 255, 255);
+}
+.container {
+    position: relative;
+    z-index: 2;
+}
+.form-control {
+    background-color: rgba(255, 255, 255, 0.679) !important;
+    
+}
+
+.form-control::placeholder {
+    color: rgba(37, 43, 77) !important;
+}

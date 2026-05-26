@@ -9,7 +9,7 @@ body, html {
   width: 350px;
 	margin-top: auto;
 	margin-bottom: auto;
-  background: #1A1A33;
+  background: white;
 	position: relative;
 	display: flex;
 	justify-content: center;
@@ -18,7 +18,7 @@ body, html {
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-	border-radius: 5px;
+	border-radius: 10px;
 }
 
 .form_container {
@@ -35,7 +35,7 @@ body, html {
 
 .login_btn {
   width: 100%;
-  background: #0C0C22 !important;
+  background: rgb(37, 43, 77) !important;
   color: white !important;
 }
 
