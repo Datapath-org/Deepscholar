@@ -7,7 +7,7 @@ We provide people in academia with a way to stay up to date on advances in scien
 ### Affiliations:
 - Autonomous University of Mexico (UNAM)
 - National School of Higher Studies (ENES)
-</br>
+  
 ### Methodology:
 
 To develop the project, a process was carried out in which different requirements were established so that DataPath could be successfully developed.
@@ -16,7 +16,6 @@ To develop the project, a process was carried out in which different requirement
 - In backend development, code was implemented for data extraction from the API, as well as recommendation algorithms, and Django was also used.
 - Frontend development was carried out to make the page visually appealing and easy to use for the user.
 - Testing and validation.
-</br>
 ### Installation and Execution
 
 1. Clone the repository:
