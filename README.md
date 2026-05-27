@@ -40,7 +40,7 @@ To develop the project, a process was carried out in which different requirement
 - Backend:  Python and Django
 - Frontend: HTML, CSS, JavaScript
   
-###Testing
+### Testing
 Manual testing was performed covering user registration, login, article browsing, saving and personalized recommendation loading.
 
 ### Results 
