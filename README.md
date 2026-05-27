@@ -8,6 +8,7 @@ We provide people in academia with a way to stay up to date on advances in scien
 - Autonomous University of Mexico (UNAM)
 - National School of Higher Studies (ENES)
 </br>
+
 ### Methodology:
 
 To develop the project, a process was carried out in which different requirements were established so that DataPath could be successfully developed.
@@ -18,7 +19,7 @@ To develop the project, a process was carried out in which different requirement
 - Testing and validation.
 </br>
 
-## Installation and Execution
+### Installation and Execution
 
 1. Clone the repository:
    git clone https://github.com/Datapath-org/Deepscholar.git
@@ -38,7 +39,7 @@ To develop the project, a process was carried out in which different requirement
 ### Implementation
 - Backend:  Python and Django
 - Frontend: HTML, CSS, JavaScript
-- 
+  
 ###Testing
 
 Manual testing was performed covering user registration, login, article browsing, saving and personalized recommendation loading.
