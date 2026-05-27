@@ -8,7 +8,6 @@ We provide people in academia with a way to stay up to date on advances in scien
 - Autonomous University of Mexico (UNAM)
 - National School of Higher Studies (ENES)
 </br>
-
 ### Methodology:
 
 To develop the project, a process was carried out in which different requirements were established so that DataPath could be successfully developed.
@@ -18,7 +17,6 @@ To develop the project, a process was carried out in which different requirement
 - Frontend development was carried out to make the page visually appealing and easy to use for the user.
 - Testing and validation.
 </br>
-
 ### Installation and Execution
 
 1. Clone the repository:
@@ -34,19 +32,15 @@ To develop the project, a process was carried out in which different requirement
    API_TOKEN=your_nasa_ads_token
 5. Run the server:
    cd Blog
-   python manage.py runserver
-   
+   python manage.py runserver 
 ### Implementation
 - Backend:  Python and Django
-- Frontend: HTML, CSS, JavaScript
-  
+- Frontend: HTML, CSS, JavaScript  
 ### Testing
 Manual testing was performed covering user registration, login, article browsing, saving and personalized recommendation loading.
-
 ### Results 
 
 A functional web application was developed that consumes the NASA ADS API, displays scientific articles, and generates personalized recommendations based on the user's saved article history using cosine similarity between semantic vectors.
-
 ### Team members
 Líder: Paola Castillo pcstillo6@gmail.com
 </br>
