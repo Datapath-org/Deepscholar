@@ -8,7 +8,8 @@ We provide people in academia with a way to stay up to date on advances in scien
 - Autonomous University of Mexico (UNAM)
 - National School of Higher Studies (ENES)
 </br>
-### Methodology
+### Methodology:
+
 To develop the project, a process was carried out in which different requirements were established so that DataPath could be successfully developed.
 </br>
 - The NASA ADS API was integrated to collect scientific articles.
@@ -16,7 +17,9 @@ To develop the project, a process was carried out in which different requirement
 - Frontend development was carried out to make the page visually appealing and easy to use for the user.
 - Testing and validation.
 </br>
+
 ## Installation and Execution
+
 1. Clone the repository:
    git clone https://github.com/Datapath-org/Deepscholar.git
 2. Create and activate the virtual environment:
@@ -35,10 +38,13 @@ To develop the project, a process was carried out in which different requirement
 ### Implementation
 - Backend:  Python and Django
 - Frontend: HTML, CSS, JavaScript
+- 
 ###Testing
+
 Manual testing was performed covering user registration, login, article browsing, saving and personalized recommendation loading.
 
 ### Results 
+
 A functional web application was developed that consumes the NASA ADS API, displays scientific articles, and generates personalized recommendations based on the user's saved article history using cosine similarity between semantic vectors.
 
 ### Team members
