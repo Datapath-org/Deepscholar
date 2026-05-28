@@ -7,6 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
+from adapters import AutoAdapterModel
+
+
+
 import requests, json
 from urllib.parse import urlencode, quote_plus
 
@@ -23,7 +27,9 @@ from Apps.PaginaWeb import models
 load_dotenv()
 token = os.getenv('API_TOKEN')
 # model = SentenceTransformer("microsoft/harrier-oss-v1-270m")
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# model = SentenceTransformer("all-MiniLM-L6-v2") commented cuz its too small for the task (180 word cap)
+model = AutoAdapterModel.from_pretrained("allenai/specter2_base")
+adapter_name = model.load_adapter("allenai/specter2", source="hf", set_active=True)
 
 # Letras y numeros para aleatorizar la query
 ascii = [chr(i) for i in range(65, 91)]   # Letras min
@@ -46,7 +52,7 @@ def home(request):
                             "rows": rows,
                             "fl": "bibcode, title, author, abstract, pubdate, citation_count", 
                             "q": f"{char}",
-                            "fq": "year:[1980 TO *]",
+                            "fq": "year:[1950 TO *]",
                             "sort": "citation_count desc"
                             })
 
@@ -68,7 +74,7 @@ def home(request):
     r_docs = []
 
     # Formula cos(x) = |v1 * v2| / |v1| * |v2|
-    if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de flechas
+    if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de vectores
         # Obtener el último paper guardado 
         last_saved = papers.first().abstract
         
@@ -149,7 +155,7 @@ def carga_mas(request):
     r_docs = []
 
     # Formula cos(x) = |v1 * v2| / |v1| * |v2|
-    if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de flechas
+    if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de vecotres
         # Obtener el último paper guardado 
         last_saved = papers.first().abstract
         
