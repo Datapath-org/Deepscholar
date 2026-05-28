@@ -30,17 +30,18 @@ To develop the project, a process was carried out in which different requirement
 
 2. Create and activate the virtual environment:
    python -m venv venv
+   source venv/bin/activate or
    venv\Scripts\activate  (Windows)
 
-3. Install dependencies:
+4. Install dependencies:
    pip install -r requirements.txt
 
-4. Set up environment variables:
+5. Set up environment variables:
    Create a .env file inside the Blog/ folder with:
    SECRET_KEY=your_secret_key
    API_TOKEN=your_nasa_ads_token
 
-5. Run the server:
+6. Run the server:
    cd Blog
    python manage.py runserver
 
