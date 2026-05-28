@@ -30,6 +30,7 @@ To develop the project, a process was carried out in which different requirement
 
 2. Create and activate the virtual environment:
    python -m venv venv
+   
    source venv/bin/activate or
    venv\Scripts\activate  (Windows)
 
