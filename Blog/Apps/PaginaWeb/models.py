@@ -40,3 +40,5 @@ class Saved(models.Model):
         verbose_name = 'Guardado'
         verbose_name_plural = 'Guardados'
         db_table = 'GUARDADO'
+
+

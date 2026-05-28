@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 import random
 import os
 import torch
+from .apps import PaginawebConfig
 from Apps.PaginaWeb.forms import CreateUserForm
 from Apps.PaginaWeb import models
 
@@ -28,9 +29,25 @@ token = 'A6Utcox848aVp9tunWYvadPEc7fs41W51W5C4KUR'
 # model = SentenceTransformer("microsoft/harrier-oss-v1-270m")
 # model = SentenceTransformer("all-MiniLM-L6-v2") commented cuz its too small for the task (180 word cap)
 # Cargar modelo y tokenizador
-tokenizer = AutoTokenizer.from_pretrained('allenai/specter2_base')
-model = AutoAdapterModel.from_pretrained('allenai/specter2_base')
-model.load_adapter("allenai/specter2", source="hf", load_as="specter2", set_active=True)
+#tokenizer = AutoTokenizer.from_pretrained('allenai/specter2_base')
+#model = AutoAdapterModel.from_pretrained('allenai/specter2_base')
+#model.load_adapter("allenai/specter2", source="hf", load_as="specter2", set_active=True) MOVED TO APPS.PY 
+
+import sys
+
+# Intentar importar las variables globales
+try:
+    from Blog.Apps.PaginaWeb import tokenizer, model
+except ImportError:
+    # Si no existen, cargarlas manualmente
+    from transformers import AutoTokenizer
+    from adapters import AutoAdapterModel
+    tokenizer = AutoTokenizer.from_pretrained('allenai/specter2_base')
+    model = AutoAdapterModel.from_pretrained('allenai/specter2_base')
+    model.load_adapter("allenai/specter2", source="hf", load_as="specter2", set_active=True)
+    model.eval()
+
+
 
 # Letras y numeros para aleatorizar la query
 ascii = [chr(i) for i in range(65, 91)]   # Letras min
@@ -46,8 +63,8 @@ def encode(texts):
     
     if isinstance(texts, str):
         texts = [texts]
-    
-    inputs = tokenizer(
+    model = PaginawebConfig.model
+    inputs = PaginawebConfig.tokenizer(
         texts,
         return_tensors="pt", 
         truncation=True, 
