@@ -19,7 +19,7 @@ To develop the project, a process was carried out in which different requirement
 </br>
 
 ### Implementation
-- Backend:  Python, Django and
+- Backend:  Python, Django 
 - Model allenai specter2 (link to the model: https://huggingface.co/allenai/specter2)
 - Frontend: HTML, CSS, JavaScript
 
