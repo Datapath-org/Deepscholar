@@ -24,7 +24,7 @@ from Apps.PaginaWeb.forms import CreateUserForm
 from Apps.PaginaWeb import models
 
 load_dotenv()
-token = os.getenv('API_TOKEN')
+token = 'A6Utcox848aVp9tunWYvadPEc7fs41W51W5C4KUR'
 # model = SentenceTransformer("microsoft/harrier-oss-v1-270m")
 # model = SentenceTransformer("all-MiniLM-L6-v2") commented cuz its too small for the task (180 word cap)
 # Cargar modelo y tokenizador

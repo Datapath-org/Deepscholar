@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-image: none !important;
+    background-color: #000000;
+    overflow-y: scroll;
+
+}
+
+.contenedor {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.imgfondo {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.recuadro {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.37);
+    z-index: 1;
+}
+
+main {
+    position: relative;
+    z-index: 2;
+}
+
+.form_box {
+    background-color: rgba(0, 0, 0, 0.459);
+    box-shadow: inset 0px 0px 5px 2px rgba(255, 255, 255, 0.103), 0px 0px 5px 2px rgba(255, 255, 255, 0.082);
+    border: 1px solid rgba(255, 255, 255, 0.712);
+    border-radius: 10px;
+    font-family: "Montserrat";
+    font-size: 15px;
+    font-weight: 300;
+    z-index: 2;
+}
+
+.btn_topbar {
+    position: relative;
+    z-index: 3;
+    background-color: rgba(255, 255, 255, 0.685);
+    border: 1px solid rgb(255, 255, 255);
+    padding: 1px 3px;
+    border-radius: 10px;
+    font-family: "Red Hat Display", sans-serif;
+    font-size: 10px;
+}
