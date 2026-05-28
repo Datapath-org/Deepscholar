@@ -34,20 +34,53 @@ start = 0
 rows = 10
 
 # Create your views here.
+@login_required(login_url='login')
+def home(request):
+    
+    # Para aleatorizar la query
+    char = random.choice(ascii)
+
+    # Parametros de la query
+    encoded_query = urlencode({
+                            "start": random.randint(0, 1000),
+                            "rows": rows,
+                            "fl": "bibcode, title, author, abstract, pubdate, citation_count", 
+                            "q": f"{char}",
+                            "fq": "year:[1980 TO *]",
+                            "sort": "citation_count desc"
+                            })
+
+    # Ejecuta query
+    results = requests.get(f"https://api.adsabs.harvard.edu/v1/search/query?{encoded_query}", headers = {'Authorization': 'Bearer ' + token})
+    
+    data = results.json()
+    docs = data["response"]["docs"]
+
+    # Abstracts de los nuevos papers 
+    new_papers = [doc.get('abstract', '') for doc in docs]
+    
+    # Vector de guardados del usuario
+    user = request.user
+    papers = models.Saved.objects.filter(user=user).order_by("-date")
+    saved = [paper.abstract for paper in papers]
+
+    # Almacenar los documentos a mostrar
+    r_docs = []
+
+    # Formula cos(x) = |v1 * v2| / |v1| * |v2|
     if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de flechas
         # Obtener el último paper guardado 
         last_saved = papers.first().abstract
         
-        saved_vect = model.encode(saved)    # TODO: Ya están vectorizados   
-        last_saved_vect = model.encode(last_saved)  # TODO: Ya está vectorizado
+        saved_vect = model.encode(saved)
+        last_saved_vect = model.encode(last_saved)
         new_papers_vect = model.encode(new_papers)
-
+    
         # Formando tendencia del historial del usuario
         history_tend = np.mean(saved_vect, axis=0)
 
         # Tendencia al último articulo guardado
-        user_tend = (0.3 * history_tend) + (0.7 * last_saved_vect)  # TODO: revisar
-        print(user_tend)
+        user_tend = (0.3 * history_tend) + (0.7 * last_saved_vect)
 
         # Generando similitud entre la tendencia del usuario y los nuevos papers
         simil = cosine_similarity([user_tend], new_papers_vect)[0]
@@ -59,8 +92,8 @@ rows = 10
     
     else:   # Simplemente aleatorizo los papers
         r_docs = docs
-        #random.shuffle(r_docs)
- 
+        random.shuffle(r_docs)
+        
     # Para que aparezca el boton de borrar
     for r_doc in r_docs:
         r_doc["liked"] = models.Saved.objects.filter(
@@ -69,8 +102,9 @@ rows = 10
         ).exists()    
 
     return render(request, "index.html", {
-        'docs': r_docs
+        'docs': docs
     })
+
 
 @login_required(login_url='login')
 def carga_mas(request): 
@@ -148,7 +182,7 @@ def carga_mas(request):
                                                     user=user,
         ).exists()    
      
-    return JsonResponse({   #Com
+    return JsonResponse({
         'docs': r_docs
     })
 
