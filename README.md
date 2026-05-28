@@ -11,7 +11,9 @@ Tecnologías: Enrique Luviano kikeluviano1810@gmail.com
 
 ### Affiliations:
 <img src="imagenes/LogoENES.jpg" width="300"/>
+
 - Autonomous University of Mexico (UNAM)
+  
 - National School of Higher Studies (ENES)
 </br>
 
@@ -58,7 +60,9 @@ To develop the project, a process was carried out in which different requirement
 
 ### Testing:
 Manual testing was performed covering user registration, login, article browsing, saving and deleting articles, and personalized recommendation loading.
+
 <img src="imagenes/prueba1.jpeg" width="300"/>
+
 <img src="imagenes/prueba2.jpeg" width="300"/>
 
 ### Results:
