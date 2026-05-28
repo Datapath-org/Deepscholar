@@ -23,7 +23,7 @@ To develop the project, a process was carried out in which different requirement
 - Model allenai specter2 (link to the model: https://huggingface.co/allenai/specter2)
 - Frontend: HTML, CSS, JavaScript
 
-## Installation and Execution
+### Installation and Execution
 
 1. Clone the repository:
    git clone https://github.com/Datapath-org/Deepscholar.git
@@ -44,10 +44,10 @@ To develop the project, a process was carried out in which different requirement
    cd Blog
    python manage.py runserver
 
-## Testing:
+### Testing:
 Manual testing was performed covering user registration, login, article browsing, saving and deleting articles, and personalized recommendation loading.
 
-## Results:
+### Results:
 A functional web application was developed that consumes the NASA ADS API, displays scientific articles, and generates personalized recommendations based on the user's saved article history.
 
 
