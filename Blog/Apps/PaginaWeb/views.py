@@ -34,6 +34,8 @@ start = 0
 rows = 10
 
 # Create your views here.
+@login_required(login_url='login')
+def home(request):
     if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de flechas
         # Obtener el último paper guardado 
         last_saved = papers.first().abstract
