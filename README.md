@@ -19,8 +19,36 @@ To develop the project, a process was carried out in which different requirement
 </br>
 
 ### Implementation
-- Backend:  Python and Django
+- Backend:  Python, Django and
+- Model allenai specter2 (link to the model: https://huggingface.co/allenai/specter2)
 - Frontend: HTML, CSS, JavaScript
+
+## Installation and Execution
+
+1. Clone the repository:
+   git clone https://github.com/Datapath-org/Deepscholar.git
+
+2. Create and activate the virtual environment:
+   python -m venv venv
+   venv\Scripts\activate  (Windows)
+
+3. Install dependencies:
+   pip install -r requirements.txt
+
+4. Set up environment variables:
+   Create a .env file inside the Blog/ folder with:
+   SECRET_KEY=your_secret_key
+   API_TOKEN=your_nasa_ads_token
+
+5. Run the server:
+   cd Blog
+   python manage.py runserver
+
+## Testing:
+Manual testing was performed covering user registration, login, article browsing, saving and deleting articles, and personalized recommendation loading.
+
+## Results:
+A functional web application was developed that consumes the NASA ADS API, displays scientific articles, and generates personalized recommendations based on the user's saved article history.
 
 
 ### Team members
