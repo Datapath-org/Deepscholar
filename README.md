@@ -10,6 +10,7 @@ Tecnologías: Enrique Luviano kikeluviano1810@gmail.com
 </br>
 
 ### Affiliations:
+![Texto alternativo](imagenes/LogoENES.jpg)
 - Autonomous University of Mexico (UNAM)
 - National School of Higher Studies (ENES)
 </br>
