@@ -7,20 +7,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
+from transformers import AutoTokenizer
 from adapters import AutoAdapterModel
-
-
 
 import requests, json
 from urllib.parse import urlencode, quote_plus
 
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+#from sklearn.metrics.pairwise import cosine_similarity now we are using our own cosine similarity func
 import numpy as np
 from dotenv import load_dotenv
 import random
 import os
-
+import torch
 from Apps.PaginaWeb.forms import CreateUserForm
 from Apps.PaginaWeb import models
 
@@ -28,8 +27,10 @@ load_dotenv()
 token = os.getenv('API_TOKEN')
 # model = SentenceTransformer("microsoft/harrier-oss-v1-270m")
 # model = SentenceTransformer("all-MiniLM-L6-v2") commented cuz its too small for the task (180 word cap)
-model = AutoAdapterModel.from_pretrained("allenai/specter2_base")
-adapter_name = model.load_adapter("allenai/specter2", source="hf", set_active=True)
+# Cargar modelo y tokenizador
+tokenizer = AutoTokenizer.from_pretrained('allenai/specter2_base')
+model = AutoAdapterModel.from_pretrained('allenai/specter2_base')
+model.load_adapter("allenai/specter2", source="hf", load_as="specter2", set_active=True)
 
 # Letras y numeros para aleatorizar la query
 ascii = [chr(i) for i in range(65, 91)]   # Letras min
@@ -38,6 +39,33 @@ ascii.extend([chr(i) for i in range(97, 123)])  # Letras may
 # Para la paginación
 start = 0
 rows = 10
+
+#Nuevas funciones para el embedding del modelo
+
+def encode(texts):
+    
+    if isinstance(texts, str):
+        texts = [texts]
+    
+    inputs = tokenizer(
+        texts,
+        return_tensors="pt", 
+        truncation=True, 
+        padding=True,      
+        max_length=512
+    )
+    
+    with torch.no_grad():  
+        outputs = model(**inputs)
+    
+    embeddings_tokens = outputs.last_hidden_state
+    embedding_paper = torch.mean(embeddings_tokens, axis=1)
+    return embedding_paper
+
+def cosine_similarity(emb1, emb2):
+    return torch.nn.functional.cosine_similarity(emb1, emb2, dim=-1)
+
+
 
 # Create your views here.
 @login_required(login_url='login')
@@ -72,24 +100,26 @@ def home(request):
 
     # Almacenar los documentos a mostrar
     r_docs = []
+    
 
     # Formula cos(x) = |v1 * v2| / |v1| * |v2|
     if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de vectores
         # Obtener el último paper guardado 
         last_saved = papers.first().abstract
         
-        saved_vect = model.encode(saved)
-        last_saved_vect = model.encode(last_saved)
-        new_papers_vect = model.encode(new_papers)
+        saved_vect = encode(saved)
+        
+        last_saved_vect = encode(last_saved)
+        new_papers_vect = encode(new_papers)
     
         # Formando tendencia del historial del usuario
-        history_tend = np.mean(saved_vect, axis=0)
+        history_tend = torch.mean(saved_vect, axis=0)
 
         # Tendencia al último articulo guardado
         user_tend = (0.3 * history_tend) + (0.7 * last_saved_vect)
 
         # Generando similitud entre la tendencia del usuario y los nuevos papers
-        simil = cosine_similarity([user_tend], new_papers_vect)[0]
+        simil = cosine_similarity(user_tend, new_papers_vect)
 
         # Ordenando por papers similares
         r_docs = list(zip(simil, docs))
@@ -159,18 +189,18 @@ def carga_mas(request):
         # Obtener el último paper guardado 
         last_saved = papers.first().abstract
         
-        saved_vect = model.encode(saved)
-        last_saved_vect = model.encode(last_saved)
-        new_papers_vect = model.encode(new_papers)
+        saved_vect = encode(saved)
+        last_saved_vect = encode(last_saved)
+        new_papers_vect = encode(new_papers)
     
         # Formando tendencia del historial del usuario
-        history_tend = np.mean(saved_vect, axis=0)
+        history_tend = torch.mean(saved_vect, axis=0)
 
         # Tendencia al último articulo guardado
         user_tend = (0.3 * history_tend) + (0.7 * last_saved_vect)
 
         # Generando similitud entre la tendencia del usuario y los nuevos papers
-        simil = cosine_similarity([user_tend], new_papers_vect)[0]
+        simil = cosine_similarity(user_tend, new_papers_vect)
 
         # Ordenando por papers similares
         r_docs = list(zip(simil, docs))
@@ -275,7 +305,7 @@ def savePaper(request,bibcode):
     #
     pubdate = docs.get('pubdate','')                    #docs['pubdate']
     #
-    embedding = model.encode(abstract)
+    embedding = encode(abstract)
     vect_text = embedding.tolist()
     #
     citation_count = docs.get('citation_count','')      #docs['citation_count']
