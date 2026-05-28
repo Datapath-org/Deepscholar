@@ -13,59 +13,64 @@
     <link rel="stylesheet" href="{% static 'css/index_css/fonts.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/index_css/body.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/index_css/description.css' %}"/>
-
+    <link rel="stylesheet" href="{% static 'css/guardados.css' %}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Math&display=swap" rel="stylesheet">
   </head>
 
   <body>
-    <span style="color:white; position: absolute; top:0; left:0; font-size: 20px;">Bienvenido, {{ request.user.username }}</span>
-      <!-- paso la url en el dataset -->
-    <span><button id="logout_button" data-url="{% url 'logout' %}" style="position: absolute; top:0; right:0; font-size: 20px;">
-      Cerrar Sesión
-    </button></span>
-    <br><br> 
-    <button onclick="window.location.href='/'" style="position: absolute; top:100; right:0; font-size: 20px;">
-      Inicio
-    </button>
-    
-    <br>    
-
-    <main>
-      <!-- Request from nasaads api -------------------------------------------------------------- -->
-      <section class="form_box">
-        <ul id="cont_art">
-          {% for doc in docs %}
-          <li>
-            <p><strong>Bibcode:</strong> {{ doc.bibcode }}</p>
-            <p><strong>Titulo:</strong> {{ doc.title|safe }}</p>
-            <p><strong>Autores:</strong> {{ doc.author|join:", " }}</p>
-            <p><strong>Resumen:</strong> {{ doc.abstract|safe }}</p>
-            <p><strong>Fecha:</strong> {{ doc.pubdate }}</p>
-            <p><strong>No. de citas:</strong> {{ doc.citation_count }}</p>
-            <p><strong>Guardado:</strong> {{ doc.date }}</p>
-            <div style="text-align: right;">
-              <button class="delete_button" data-url="/delete/{{ doc.bibcode }}/">
-                Borrar
-              </button>
-            </div>
-          </li>
-          <hr>
-          {% endfor %}
-        </ul>
-
-        <!-- <button id="more_button" data-url="{% url 'more' %}">
-          Cargar más
-        </button>
-        <script src="{% static 'js/cargar_mas.js' %}"></script> -->
-        <script src="{% static 'js/logout.js' %}"></script>
-        <!-- <script src="{% static 'js/guardar.js' %}"></script> -->
-        <script src="{% static 'js/borrar.js' %}"></script>
+    <div class="contenedor">
+        <img class="imgfondo" src="{% static 'img/aaaaa.jpg' %}" alt="Fondo">
+        <div class="recuadro"></div>
+      <span style="color:white; position: absolute; top:0; left:0; font-size: 20px;">Bienvenido, {{ request.user.username }}</span>
+        <!-- paso la url en el dataset -->
+      <span><button id="logout_button" class="btn_topbar" data-url="{% url 'logout' %}" style="position: absolute; top:0; right:0; font-size: 20px;">
+        Cerrar Sesión
+      </button></span>
+      <br><br> 
+      <button class="btn_topbar" onclick="window.location.href='/'" style="position: absolute; top:100; right:0; font-size: 20px;">
+        Inicio
+      </button>
       
-      </section>
-      <!-- --------------------------------------------------------------------------------------- -->
+      <br>    
 
-    </main>
+      <main>
+        <!-- Request from nasaads api -------------------------------------------------------------- -->
+        <section class="form_box">
+          <ul id="cont_art">
+            {% for doc in docs %}
+            <li>
+              <p><strong>Bibcode:</strong> {{ doc.bibcode }}</p>
+              <p><strong>Titulo:</strong> {{ doc.title|safe }}</p>
+              <p><strong>Autores:</strong> {{ doc.author|join:", " }}</p>
+              <p><strong>Resumen:</strong> {{ doc.abstract|safe }}</p>
+              <p><strong>Fecha:</strong> {{ doc.pubdate }}</p>
+              <p><strong>No. de citas:</strong> {{ doc.citation_count }}</p>
+              <p><strong>Guardado:</strong> {{ doc.date }}</p>
+              <div style="text-align: right;">
+                <button class="delete_button" data-url="/delete/{{ doc.bibcode }}/">
+                  Borrar
+                </button>
+              </div>
+            </li>
+            <hr>
+            {% endfor %}
+          </ul>
+
+          <!-- <button id="more_button" data-url="{% url 'more' %}">
+            Cargar más
+          </button>
+          <script src="{% static 'js/cargar_mas.js' %}"></script> -->
+          <script src="{% static 'js/logout.js' %}"></script>
+          <!-- <script src="{% static 'js/guardar.js' %}"></script> -->
+          <script src="{% static 'js/borrar.js' %}"></script>
+        
+        </section>
+        <!-- --------------------------------------------------------------------------------------- -->
+
+      </main>
+    </div>  
   </body>
 </html>
