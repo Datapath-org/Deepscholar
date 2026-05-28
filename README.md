@@ -15,9 +15,8 @@ Tecnologías: Enrique Luviano kikeluviano1810@gmail.com
 </br>
 
 ### Description
-We provide people in academia with a way to stay up to date on advances in science without it being tedious; we aim to make it interactive and dynamic. Our app will show you a summary of current academic articles, and little by little we will get to know you so we can recommend what you are really interested in.
+People in academia are provided with a way to stay up to date with scientific advances without the process becoming tedious. An interactive and dynamic experience is intended to be created through our app. Summaries of current academic articles are presented, and users’ interests are gradually identified so that more personalized recommendations can be offered.
 </br>
-
 
 ### Methodology
 To develop the project, a process was carried out in which different requirements were established so that DataPath could be successfully developed.
