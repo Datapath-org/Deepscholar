@@ -1,13 +1,23 @@
 # Deepscholar
 Hello, we are Deepscholar
+
+### Team members
+Líder: Paola Castillo pcstillo6@gmail.com
 </br>
-### Description
-We provide people in academia with a way to stay up to date on advances in science without it being tedious; we aim to make it interactive and dynamic. Our app will show you a summary of current academic articles, and little by little we will get to know you so we can recommend what you are really interested in.
+Testing: Alejandro Cons Andablo alexmixsep@gmail.com
 </br>
+Tecnologías: Enrique Luviano kikeluviano1810@gmail.com
+</br>
+
 ### Affiliations:
 - Autonomous University of Mexico (UNAM)
 - National School of Higher Studies (ENES)
 </br>
+
+### Description
+We provide people in academia with a way to stay up to date on advances in science without it being tedious; we aim to make it interactive and dynamic. Our app will show you a summary of current academic articles, and little by little we will get to know you so we can recommend what you are really interested in.
+</br>
+
 
 ### Methodology
 To develop the project, a process was carried out in which different requirements were established so that DataPath could be successfully developed.
@@ -53,9 +63,4 @@ Manual testing was performed covering user registration, login, article browsing
 A functional web application was developed that consumes the NASA ADS API, displays scientific articles, and generates personalized recommendations based on the user's saved article history.
 
 
-### Team members
-Líder: Paola Castillo pcstillo6@gmail.com
-</br>
-Testing: Alejandro Cons Andablo alexmixsep@gmail.com
-</br>
-Tecnologías: Enrique Luviano kikeluviano1810@gmail.com
+
