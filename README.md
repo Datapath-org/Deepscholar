@@ -22,7 +22,7 @@ We provide people in academia with a way to stay up to date on advances in scien
 ### Methodology
 To develop the project, a process was carried out in which different requirements were established so that DataPath could be successfully developed.
 </br>
-- The NASA ADS API was integrated to collect scientific articles.
+- The NASA ADS API was integrated to collect scientific articles (API link: https://ui.adsabs.harvard.edu/help/api/).
 - In backend development, code was implemented for data extraction from the API, as well as recommendation algorithms, and Django was also used.
 - Frontend development was carried out to make the page visually appealing and easy to use for the user.
 - Testing and validation.
