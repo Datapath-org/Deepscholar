@@ -42,3 +42,35 @@ class Saved(models.Model):
         db_table = 'GUARDADO'
 
 
+from django.db import models
+from django.contrib.auth.models import User
+
+
+class UserProfile(models.Model):
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )
+
+    interests = models.JSONField(default=list)
+
+    viewed_articles = models.JSONField(default=list)
+
+    class Meta:
+        db_table = "USER_PROFILE"
+
+    def save(self, *args, **kwargs):
+
+        self.interests = self.interests[:10]
+
+        for vect in self.interests:
+            if len(vect) != 384:
+                raise ValueError(
+                    "Vector needs to be 384 dims"
+                )
+
+        self.viewed_articles = self.viewed_articles[:60]
+
+        super().save(*args, **kwargs)

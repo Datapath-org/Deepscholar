@@ -33,7 +33,7 @@ token = 'A6Utcox848aVp9tunWYvadPEc7fs41W51W5C4KUR'
 #model = AutoAdapterModel.from_pretrained('allenai/specter2_base')
 #model.load_adapter("allenai/specter2", source="hf", load_as="specter2", set_active=True) MOVED TO APPS.PY 
 
-import sys
+
 
 # Intentar importar las variables globales
 try:
@@ -47,7 +47,40 @@ except ImportError:
     model.load_adapter("allenai/specter2", source="hf", load_as="specter2", set_active=True)
     model.eval()
 
-
+class MultiInterestUserProfile:
+    def __init__(self, n_interests=5):
+        self.n_interests = n_interests
+        self.interests = []  # Lista de vectores centro
+        self.weights = []    # Importancia de cada interés
+        
+    def add_interaction(self, item_vector, weight=1.0):
+        """Añade un nuevo gusto al perfil"""
+        if len(self.interests) == 0:
+            # Primer interés
+            self.interests.append(item_vector)
+            self.weights.append(weight)
+        else:
+            # Encontrar interés más cercano
+            similarities = [np.dot(item_vector, interest) 
+                          for interest in self.interests]
+            best_match_idx = np.argmax(similarities)
+            
+            if similarities[best_match_idx] > 0.7:  # Umbral de similitud
+                # Pertenece a interés existente → actualizar centro
+                self.interests[best_match_idx] = (
+                    self.interests[best_match_idx] * self.weights[best_match_idx] + 
+                    item_vector * weight
+                ) / (self.weights[best_match_idx] + weight)
+                self.weights[best_match_idx] += weight
+            elif len(self.interests) < self.n_interests:
+                # Nuevo interés
+                self.interests.append(item_vector)
+                self.weights.append(weight)
+            else:
+                # Reemplazar el menos importante
+                min_weight_idx = np.argmin(self.weights)
+                self.interests[min_weight_idx] = item_vector
+                self.weights[min_weight_idx] = weight
 
 # Letras y numeros para aleatorizar la query
 ascii = [chr(i) for i in range(65, 91)]   # Letras min
@@ -186,7 +219,6 @@ def carga_mas(request):
     
     data = results.json()
     docs = data["response"]["docs"]
-    
     # De nuevo esto porque si el usuario le dio like antes de
     # cargar más, aquí no lo tendría en cuenta
     
@@ -195,12 +227,30 @@ def carga_mas(request):
     
     # Vector de guardados del usuario
     user = request.user
-    papers = models.Saved.objects.filter(user=user).order_by("-date")
-    saved = [paper.abstract for paper in papers]
+    papers = models.UserProfile.objects.filter(user=user)
+    saved = [paper.insterests for paper in papers]
 
     # Almacenar los documentos a mostrar
     r_docs = []
 
+    
+    def recommend(self, catalog_vectors, catalog_items, k=20):
+        """Recomienda combinando múltiples intereses"""
+        all_scores = np.zeros(len(catalog_vectors))
+        
+        # Cada interés contribuye proporcionalmente a su peso
+        for interest, weight in zip(self.interests, self.weights):
+            scores = np.dot(catalog_vectors, interest)
+            all_scores += scores * weight
+        
+        # Normalizar
+        all_scores = all_scores / sum(self.weights)
+        
+        # Top-k
+        top_idx = np.argsort(all_scores)[-k:][::-1]
+        return [(catalog_items[i], all_scores[i]) for i in top_idx]
+
+# Recomendará principalmente programación (peso 2), algo de cocina (peso 1)
     # Formula cos(x) = |v1 * v2| / |v1| * |v2|
     if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de vecotres
         # Obtener el último paper guardado 
@@ -234,8 +284,9 @@ def carga_mas(request):
                                                     bibcode=r_doc['bibcode'],
                                                     user=user,
         ).exists()    
-     
+                
     return JsonResponse({
+        
         'docs': r_docs
     })
 
@@ -309,7 +360,7 @@ def savePaper(request,bibcode):
 
     data = results.json()
     docs = data["response"]["docs"][0]
-
+    
     bibcode = docs.get('bibcode', '')                   #docs['bibcode']
     #
     title = docs.get('title', [''])[0]                  #docs['title'][0]
