@@ -22,7 +22,7 @@ boton_more.addEventListener("click", async () => {
         list.innerHTML = 
             `<p><strong>Bibcode:</strong> ${doc.bibcode}</p>
              <p><strong>Titulo:</strong> ${doc.title[0]}</p>
-             <p><strong>Autores:</strong> ${doc.author.join(", ")}</p>
+             <p><strong>Autores:</strong> ${formatAuthors(doc.author)}</p>
              <p><strong>Resumen:</strong> ${doc.abstract}</p>
              <p><strong>Fecha:</strong> ${doc.pubdate}</p>
              <p><strong>No. de citas:</strong> ${doc.citation_count}</p>

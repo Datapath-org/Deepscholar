@@ -40,3 +40,24 @@ class Saved(models.Model):
         verbose_name = 'Guardado'
         verbose_name_plural = 'Guardados'
         db_table = 'GUARDADO'
+
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    interests = models.JSONField(default=list)  # Lista de vectores
+    weights = models.JSONField(default=list)    # Lista de pesos
+    
+    def __str__(self):
+        return f"{self.user.username}'s profile"
+
+    def save(self, *args, **kwargs):
+
+        self.interests = self.interests[:10]
+        self.weights = self.weights[:10]
+
+
+
+        super().save(*args, **kwargs)

@@ -50,114 +50,42 @@ except ImportError:
 class MultiInterestUserProfile:
     def __init__(self, n_interests=6):
         self.n_interests = n_interests
-        self.interests = []  # Lista de vectores centro (tensores)
+        self.interests = []  # Lista de vectores centro
         self.weights = []    # Importancia de cada interés
-    
-    def update_from_database(self, user):
-        """Carga el perfil desde la base de datos"""
-        try:
-            # Obtener o crear perfil de usuario
-            profile, created = models.UserProfile.objects.get_or_create(user=user)
-            
-            # Cargar intereses y pesos desde la BD
-            if profile.interests and len(profile.interests) > 0:
-                # Convertir listas guardadas a tensores
-                self.interests = [torch.tensor(interest) for interest in profile.interests]
-                self.weights = [torch.tensor(weight) for weight in profile.weights]
-                return self.interests
-            else:
-                # Perfil vacío
-                self.interests = []
-                self.weights = []
-                return None
-                
-        except Exception as e:
-            print(f"Error cargando perfil: {e}")
-            self.interests = []
-            self.weights = []
-            return None
-    
-    def save_to_database(self, user):
-        """Guarda el perfil actual en la base de datos"""
-        try:
-            profile = models.UserProfile.objects.get(user=user)
-            
-            # Convertir tensores a listas para JSON
-            profile.interests = [i.cpu().numpy().tolist() if torch.is_tensor(i) else i for i in self.interests]
-            profile.weights = [w.cpu().item() if torch.is_tensor(w) else w for w in self.weights]
-            profile.save()
-            
-            print(f"Perfil guardado: {len(self.interests)} intereses")
-            
-        except models.UserProfile.DoesNotExist:
-            # Crear nuevo perfil
-            models.UserProfile.objects.create(
-                user=user,
-                interests=[i.cpu().numpy().tolist() if torch.is_tensor(i) else i for i in self.interests],
-                weights=[w.cpu().item() if torch.is_tensor(w) else w for w in self.weights]
-            )
-            print(f"Nuevo perfil creado: {len(self.interests)} intereses")
-    
-    def add_interaction(self, user, item_vector, weight=1.0):
-        """Añade una interacción al perfil"""
-        
-        # Asegurar que item_vector es tensor
-        if not torch.is_tensor(item_vector):
-            item_vector = torch.tensor(item_vector)
-        
-        # Aplanar si es necesario (de (1,768) a (768))
-        if item_vector.dim() > 1:
-            item_vector = item_vector.squeeze()
-        
-        print(f"Añadiendo interacción. Vector shape: {item_vector.shape}")
-        
+    def update_from_data_base(self,usr):
+        update = models.Saved.objects.filter(user=usr)
+        if update: 
+            self.interests = [paper.interests for paper in update]
+            self.weights = [paper.weights for paper in update]
+    def add_interaction(self, item_vector, weight=1.0):
+        """Añade un nuevo gusto al perfil"""
         if len(self.interests) == 0:
             # Primer interés
             self.interests.append(item_vector)
-            self.weights.append(torch.tensor(weight))
-            self.save_to_database(user)
-            print(f"Primer interés añadido!")
-            
+            self.weights.append(weight)
         else:
-            # Encontrar interés más cercano usando cosine similarity
-            similarities = []
-            for interest in self.interests:
-                # Normalizar vectores para cosine similarity
-                cos_sim = torch.nn.functional.cosine_similarity(
-                    item_vector.unsqueeze(0), 
-                    interest.unsqueeze(0)
-                )
-                similarities.append(cos_sim.item())
-            
+            # Encontrar interés más cercano
+            similarities = [np.dot(item_vector, interest) 
+                          for interest in self.interests]
             best_match_idx = np.argmax(similarities)
-            best_similarity = similarities[best_match_idx]
             
-            print(f"Mejor similitud: {best_similarity:.4f}")
-            
-            if best_similarity > 0.7:  # Umbral de similitud
-                # Actualizar interés existente
-                total_weight = self.weights[best_match_idx] + weight
+            if similarities[best_match_idx] > 0.7:  # Umbral de similitud
+
                 self.interests[best_match_idx] = (
                     self.interests[best_match_idx] * self.weights[best_match_idx] + 
                     item_vector * weight
-                ) / total_weight
-                self.weights[best_match_idx] = total_weight
-                print(f"Interés actualizado (peso: {total_weight:.1f})")
-                
+                ) / (self.weights[best_match_idx] + weight)
+                self.weights[best_match_idx] += weight
             elif len(self.interests) < self.n_interests:
-                # Nuevo interés
+                #Nuevo interes
                 self.interests.append(item_vector)
-                self.weights.append(torch.tensor(weight))
-                print(f"Nuevo interés añadido! Total: {len(self.interests)}/{self.n_interests}")
-                
+                self.weights.append(weight)
             else:
                 # Reemplazar el menos importante
-                min_weight_idx = torch.argmin(torch.tensor(self.weights)).item()
+                min_weight_idx = np.argmin(self.weights)
                 self.interests[min_weight_idx] = item_vector
-                self.weights[min_weight_idx] = torch.tensor(weight)
-                print(f"Interés reemplazado (era peso {self.weights[min_weight_idx].item():.1f})")
-            
-            self.save_to_database(user)
+                self.weights[min_weight_idx] = weight
+
 # Letras y numeros para aleatorizar la query
 ascii = [chr(i) for i in range(65, 91)]   # Letras min
 ascii.extend([chr(i) for i in range(97, 123)])  # Letras may
@@ -221,43 +149,37 @@ def home(request):
     
     # Vector de guardados del usuario
     user = request.user
-    profile = MultiInterestUserProfile()
+    MultiInterestUserProfile.update_from_data_base(user)
 
-    saved_interest = profile.update_from_database(user)
-    
     # Almacenar los documentos a mostrar
     r_docs = []
     
 
     # Formula cos(x) = |v1 * v2| / |v1| * |v2|
-    if saved_interest:   # Todo el procesamiento de recomendación basado en similitud de dirección de vectores
-        # Ver si ya hay intereses creados
-        top_k=5 #Cuantos textos vamos a mostrar del total de los textos obtenidos?
-        lista=[]
-        for c in range(len(new_papers)):
-            vector_consulta = encode(new_papers[c])
+    if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de vectores
+        # Obtener el último paper guardado 
+        last_saved = papers.first().abstract
         
-            # Calcular similitud con todos los textos del catálogo
-            similitudes = []
-            for i, vector_catalogo in enumerate(saved_interest):
-                sim = torch.dot(vector_consulta.squeeze(), vector_catalogo)
-                similitudes.append((i, sim))
-            
-            # Ordenar por similitud (mayor a menor)
-            similitudes.sort(key=lambda x: x[1], reverse=True)
-            
-            # Devolver los top_k (excluyendo el mismo si coincide)
-            resultados = []
-            for idx, sim in similitudes[:top_k+1]:
-                if sim < 0.999:  # Evitar el mismo texto si está en el catálogo
-                    resultados.append((saved_interest[idx], sim))
-            if resultados:
+        saved_vect = encode(saved)
+        
+        last_saved_vect = encode(last_saved)
+        new_papers_vect = encode(new_papers)
+    
+        # Formando tendencia del historial del usuario
+        history_tend = torch.mean(saved_vect, axis=0)
 
-                lista.append((resultados[0][1],docs[c]))
-            else: break
-        r_docs = sorted(lista, key=lambda x: x[0])
+        # Tendencia al último articulo guardado
+        user_tend = (0.3 * history_tend) + (0.7 * last_saved_vect)
+
+        # Generando similitud entre la tendencia del usuario y los nuevos papers
+        simil = cosine_similarity(user_tend, new_papers_vect)
+
+        # Ordenando por papers similares
+        r_docs = list(zip(simil, docs))
+        r_docs.sort(key=lambda x:x[0], reverse=True)
+        r_docs = [doc[1] for doc in r_docs]
+    
     else:   # Simplemente aleatorizo los papers
-        print("paper aleatorio")
         r_docs = docs
         random.shuffle(r_docs)
         
@@ -282,7 +204,7 @@ def carga_mas(request):
     page = int(request.GET.get("page", 1))
 
     # Paginador que depende de page
-    start = (page - 1) * rows 
+    start = (page - 1) * rows
     char = random.choice(ascii)
     
     # Parametros de la query
@@ -297,52 +219,65 @@ def carga_mas(request):
 
     # Ejecuta query
     results = requests.get(f"https://api.adsabs.harvard.edu/v1/search/query?{encoded_query}", headers = {'Authorization': 'Bearer ' + token})
+    
     data = results.json()
     docs = data["response"]["docs"]
-
+    # De nuevo esto porque si el usuario le dio like antes de
+    # cargar más, aquí no lo tendría en cuenta
+    
     # Abstracts de los nuevos papers 
     new_papers = [doc.get('abstract', '') for doc in docs]
     
     # Vector de guardados del usuario
     user = request.user
-    profile = MultiInterestUserProfile()
+    papers = models.UserProfile.objects.filter(user=user)
+    saved = [paper.insterests for paper in papers]
 
-    saved_interest = profile.update_from_database(user)
-    
     # Almacenar los documentos a mostrar
     r_docs = []
 
     
-
-    # Formula cos(x) = |v1 * v2| / |v1| * |v2|
-    if saved_interest:   # Todo el procesamiento de recomendación basado en similitud de dirección de vectores
-        # Ver si ya hay intereses creados
-        top_k=5 #Cuantos textos vamos a mostrar del total de los textos obtenidos?
-        lista=[]
-        for c in range(len(new_papers)):
-            vector_consulta = encode(new_papers[c])
+    def recommend(self, catalog_vectors, catalog_items, k=20):
+        """Recomienda combinando múltiples intereses"""
+        all_scores = np.zeros(len(catalog_vectors))
         
-            # Calcular similitud con todos los textos del catálogo
-            similitudes = []
-            for i, vector_catalogo in enumerate(saved_interest):
-                sim = torch.dot(vector_consulta.squeeze(), vector_catalogo)
-                similitudes.append((i, sim))
-            
-            # Ordenar por similitud (mayor a menor)
-            similitudes.sort(key=lambda x: x[1], reverse=True)
-            
-            # Devolver los top_k (excluyendo el mismo si coincide)
-            resultados = []
-            for idx, sim in similitudes[:top_k+1]:
-                if sim < 0.999:  # Evitar el mismo texto si está en el catálogo
-                    resultados.append((saved_interest[idx], sim))
-            if resultados:
+        # Cada interés contribuye proporcionalmente a su peso
+        for interest, weight in zip(self.interests, self.weights):
+            scores = np.dot(catalog_vectors, interest)
+            all_scores += scores * weight
+        
+        # Normalizar
+        all_scores = all_scores / sum(self.weights)
+        
+        # Top-k
+        top_idx = np.argsort(all_scores)[-k:][::-1]
+        return [(catalog_items[i], all_scores[i]) for i in top_idx]
 
-                lista.append((resultados[0][1],docs[c]))
-            else: break
-        r_docs = sorted(lista, key=lambda x: x[0])
+# Recomendará principalmente programación (peso 2), algo de cocina (peso 1)
+    # Formula cos(x) = |v1 * v2| / |v1| * |v2|
+    if saved:   # Todo el procesamiento de recomendación basado en similitud de dirección de vecotres
+        # Obtener el último paper guardado 
+        last_saved = papers.first().abstract
+        
+        saved_vect = encode(saved)
+        last_saved_vect = encode(last_saved)
+        new_papers_vect = encode(new_papers)
+    
+        # Formando tendencia del historial del usuario
+        history_tend = torch.mean(saved_vect, axis=0)
+
+        # Tendencia al último articulo guardado
+        user_tend = (0.3 * history_tend) + (0.7 * last_saved_vect)
+
+        # Generando similitud entre la tendencia del usuario y los nuevos papers
+        simil = cosine_similarity(user_tend, new_papers_vect)
+
+        # Ordenando por papers similares
+        r_docs = list(zip(simil, docs))
+        r_docs.sort(key=lambda x:x[0], reverse=True)
+        r_docs = [doc[1] for doc in r_docs]
+    
     else:   # Simplemente aleatorizo los papers
-        print("paper aleatorio")
         r_docs = docs
         random.shuffle(r_docs)
         
@@ -352,11 +287,11 @@ def carga_mas(request):
                                                     bibcode=r_doc['bibcode'],
                                                     user=user,
         ).exists()    
-
-    return render(request, "index.html", {
+                
+    return JsonResponse({
+        
         'docs': r_docs
     })
-
 
 def registerPage(request):
     # Si el usuario tiene una sesion iniciada
@@ -413,59 +348,54 @@ def logoutUser(request):
     return redirect('login')
 
 @login_required(login_url='login')
-def savePaper(request, bibcode):
-    print(f"Guardando paper: {bibcode}")
-    
-    # Obtener datos del paper (tu código existente)
+def savePaper(request,bibcode):
+
+    # Encontrar paper 
     encoded_query = urlencode({
-        "start": 0,
-        "rows": 1,
-        "fl": "bibcode, title, author, abstract, pubdate, citation_count",
-        "q": f"{bibcode}",
-    })
-    
-    results = requests.get(
-        f"https://api.adsabs.harvard.edu/v1/search/query?{encoded_query}",
-        headers={'Authorization': 'Bearer ' + token}
-    )
-    
+                               "start": 0,
+                               "rows": 1,
+                               "fl": "bibcode, title, author, abstract, pubdate, citation_count", 
+                               "q": f"{bibcode}",
+                              })
+
+    # Ejecuta query
+    results = requests.get(f"https://api.adsabs.harvard.edu/v1/search/query?{encoded_query}", headers = {'Authorization': 'Bearer ' + token})
+
     data = results.json()
     docs = data["response"]["docs"][0]
     
-    # Generar embedding
-    abstract = docs.get('abstract', '')
-    embedding = encode(abstract)  # Esto devuelve tensor (1, 768) o (768,)
-    
-    # Asegurar que embedding es 1D
-    if embedding.dim() > 1:
-        embedding = embedding.squeeze()
-    
-    print(f"Embedding shape: {embedding.shape}")
-    
-    # Guardar en Saved (tu código existente)
+    bibcode = docs.get('bibcode', '')                   #docs['bibcode']
+    #
+    title = docs.get('title', [''])[0]                  #docs['title'][0]
+    #
+    author = docs.get('author','')                      #docs['author']
+    #
+    # try: abstract = docs['abstract']
+    # except: abstract = ""
+    abstract = docs.get('abstract','')                  #docs['abstract']
+    #
+    pubdate = docs.get('pubdate','')                    #docs['pubdate']
+    #
+    embedding = encode(abstract)
+    vect_text = embedding.tolist()
+    #
+    citation_count = docs.get('citation_count','')      #docs['citation_count']
+
+        
     paper = models.Saved.objects.create(
         bibcode=bibcode,
-        title=docs.get('title', [''])[0],
-        author=docs.get('author', ''),
+        title=title,
+        author=author,
         abstract=abstract,
-        pubdate=docs.get('pubdate', ''),
-        vect_text=embedding.cpu().numpy().tolist(),
-        citation_count=docs.get('citation_count', 0),
+        pubdate=pubdate,
+        vect_text=vect_text,
+        citation_count=docs['citation_count'],
         user=request.user
     )
-    
-    # ACTUALIZAR PERFIL DE INTERESES
-    user = request.user
-    profile = MultiInterestUserProfile()
-    
-    # Cargar perfil existente
-    existing_interests = profile.update_from_database(user)
-    print(f"Perfil cargado: {len(profile.interests)} intereses existentes")
-    
-    # Añadir nueva interacción
-    profile.add_interaction(user, embedding, weight=1.0)
-    
-    return JsonResponse({"status": "ok"})
+
+    return JsonResponse({
+        "status":"ok"
+    })
 
 @login_required(login_url='login')
 def deletePaper(request,bibcode):
